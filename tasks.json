@@ -1,0 +1,991 @@
+{
+  "project": "MishiPay Unified Documentation",
+  "created": "2026-01-27",
+  "total_tasks": 39,
+  "notes": "Each task is scoped to ~1 hour of human work. Claude should complete one task per session, then request review.",
+  "phases": [
+    "Phase 0: Foundation & Overview",
+    "Phase 1: Promotions Service",
+    "Phase 2: MishiPay Platform Foundation",
+    "Phase 3: MishiPay Items & Commerce",
+    "Phase 4: MishiPay Retail Operations",
+    "Phase 5: MishiPay Integrations & Retailers",
+    "Phase 6: MishiPay Support Modules",
+    "Phase 7: Infrastructure & DevOps",
+    "Phase 8: Finalization"
+  ],
+  "tasks": [
+    {
+      "id": "T00",
+      "title": "Project Overview & Architecture Map",
+      "phase": "Phase 0: Foundation & Overview",
+      "status": "completed",
+      "completed_notes": "Created all three foundation docs. 00-index.md: full documentation map with 27 planned docs across 4 sections and task progress table. 01-architecture-overview.md: system architecture diagram, 16+ services documented with ports/databases/purpose, networking model (mpay_pub/mpay_net), Kafka consumers, Dramatiq task processing, service communication patterns (REST/gRPC/Kafka/RabbitMQ), dev vs prod differences, and release process. 02-tech-stack.md: comprehensive tech inventory including Python 3.9/Django 4.1.13 (monolith) and Django 3.2.24 (promos), 5 database systems, all payment gateway libraries, messaging/analytics/email/XML/gRPC libraries, Django extensions, dev tools, Docker base images, and external services.",
+      "description": "Create the master index and high-level architecture overview. Read both READMEs, docker-compose files, and top-level configs. Map how the two repos relate. Document the tech stack across both services.",
+      "source_paths": [
+        "MishiPay/README.md",
+        "MishiPay/docker-compose.yml",
+        "MishiPay/docker-compose-prod.yml",
+        "MishiPay/Makefile",
+        "MishiPay/Dockerfile",
+        "MishiPay/mainServer/pyproject.toml",
+        "service.promotions/README.md",
+        "service.promotions/docker-compose.yml",
+        "service.promotions/Dockerfile",
+        "service.promotions/pyproject.toml"
+      ],
+      "docs_to_update": [
+        "docs/00-index.md",
+        "docs/01-architecture-overview.md",
+        "docs/02-tech-stack.md"
+      ],
+      "acceptance_criteria": [
+        "00-index.md has table of contents for all planned docs",
+        "Architecture overview shows both repos and their relationship",
+        "Tech stack lists all major technologies with versions",
+        "Diagram or description of how services communicate"
+      ]
+    },
+    {
+      "id": "T01",
+      "title": "Promotions Service — Overview, Settings & Configuration",
+      "phase": "Phase 1: Promotions Service",
+      "status": "completed",
+      "completed_notes": "Created two docs. overview.md: project structure diagram, Django settings (database, middleware, installed apps, monitoring), all config.py constants documented (8 promo families, 3 discount types, 2 evaluation criteria, 4 application types, 7 node types, 2 discount strategies, 3 price types, 2 availability modes, 3 item selection criteria, retailer-specific flags), full API endpoint table (12 routes), dependencies. devops.md: Dockerfile build stages, 2 docker-compose files (dev + Azure CI), env templates, Gunicorn production config, 4 dev scripts, dual CI/CD pipelines (GitHub Actions + Azure Pipelines) with full job descriptions, GitVersion config, deployment architecture diagram, Docker registry map.",
+      "description": "Document the promotions microservice structure, Django settings, configuration constants, and DevOps setup. Understand how this service is deployed and configured.",
+      "source_paths": [
+        "service.promotions/service/promotions/settings.py",
+        "service.promotions/service/promotions/urls.py",
+        "service.promotions/service/promotions/wsgi.py",
+        "service.promotions/service/promotions/asgi.py",
+        "service.promotions/service/mpromo/config.py",
+        "service.promotions/service/gunicorn.conf.py",
+        "service.promotions/conf/",
+        "service.promotions/scripts/",
+        "service.promotions/.azure/",
+        "service.promotions/.github/"
+      ],
+      "docs_to_update": [
+        "docs/promotions-service/overview.md",
+        "docs/promotions-service/devops.md"
+      ],
+      "acceptance_criteria": [
+        "Overview describes the service purpose and architecture",
+        "All configuration constants documented",
+        "Django settings key values documented",
+        "DevOps: Docker, CI/CD, deployment process documented"
+      ]
+    },
+    {
+      "id": "T02",
+      "title": "Promotions Service — Data Models",
+      "phase": "Phase 1: Promotions Service",
+      "status": "completed",
+      "completed_notes": "Created data-models.md. Documented all 6 models: PromoHeader (27 fields including layer, family, discount config, scheduling, happy hour, active days, item selection criteria, stacking rules, max discount cap), PromoGroup (5 fields, groups with qty thresholds), PromoGroupNode (7 fields with per-node discount overrides and exclusions), PromoHeaderStore (4 fields with soft delete and unique constraint), PromoHeaderSpecialPromo (4 fields for loyalty qualifiers), PromoApplicationFilter (5 fields with JSON filters). Documented ER diagram, no-FK design pattern, KSUID primary keys, all serializers (6 model + 6 evaluation request), Django admin config for 5 models, and a concrete promotion data flow example.",
+      "description": "Document all Django models in the promotions service. Map relationships between PromoHeader, PromoGroup, PromoGroupNode, PromoHeaderStore, PromoHeaderSpecialPromo, and PromoApplicationFilter. Document all fields, types, and constraints.",
+      "source_paths": [
+        "service.promotions/service/mpromo/models/promo_header.py",
+        "service.promotions/service/mpromo/models/promo_group.py",
+        "service.promotions/service/mpromo/models/promo_group_node.py",
+        "service.promotions/service/mpromo/models/promo_header_store.py",
+        "service.promotions/service/mpromo/models/promo_header_special_promo.py",
+        "service.promotions/service/mpromo/models/promo_application_filter.py",
+        "service.promotions/service/mpromo/models/__init__.py",
+        "service.promotions/service/mpromo/serializers.py",
+        "service.promotions/service/mpromo/admin.py"
+      ],
+      "docs_to_update": [
+        "docs/promotions-service/data-models.md"
+      ],
+      "acceptance_criteria": [
+        "All 6 models documented with every field, type, and constraint",
+        "Relationships between models described",
+        "Serializer fields and validation rules documented",
+        "Entity relationship diagram (text-based) included"
+      ]
+    },
+    {
+      "id": "T03",
+      "title": "Promotions Service — Core Business Logic",
+      "phase": "Phase 1: Promotions Service",
+      "status": "completed",
+      "completed_notes": "Created business-logic.md. Documented the complete evaluation pipeline (7-step flow from basket parsing to response building), V1 vs V2 engine differences (pack items, basket promo handling, cross-layer item propagation, 3 vs 4 cluster types), the best-discount algorithm (NetworkX graph-based sub-clustering + exhaustive permutation for <=6 clusters / marginal value ranking for >6 clusters referencing Microsoft Dynamics method), all 8 promotion family types with examples and group requirements, the Factory/Executer dispatch pattern, PromoFamilyFactory abstract base with shared discount calculation methods, dual data access layer (ORM vs raw SQL), PromoDataManager assembly, on-the-fly promotions, response format with per-item discount_info/requisite_info/remaining_info breakdown, and notable patterns (composite string keys, deep-copy-heavy algorithm, Decimal arithmetic, singleton families). Also covered configuration constants and retailer-specific overrides.",
+      "description": "Document the promotion evaluation engine: promo_logic, promo_logic_v2, data manager, DB helpers, and the factory/executer pattern. This is the heart of the service.",
+      "source_paths": [
+        "service.promotions/service/mpromo/promo_core/promo_logic.py",
+        "service.promotions/service/mpromo/promo_core/promo_logic_v2.py",
+        "service.promotions/service/mpromo/promo_core/promo_data_manager.py",
+        "service.promotions/service/mpromo/promo_core/promo_db_helper.py",
+        "service.promotions/service/mpromo/promo_core/promo_db_helper_raw_sql.py",
+        "service.promotions/service/mpromo/promo_core/promo_family_factory.py",
+        "service.promotions/service/mpromo/promo_core/promo_family_executer.py",
+        "service.promotions/service/mpromo/promo_core/__init__.py"
+      ],
+      "docs_to_update": [
+        "docs/promotions-service/business-logic.md"
+      ],
+      "acceptance_criteria": [
+        "Promotion evaluation algorithm documented step by step",
+        "Cluster/node/layer concepts explained with examples",
+        "Factory pattern and family selection logic documented",
+        "Difference between v1 and v2 logic explained",
+        "DB helper query patterns documented",
+        "Best discount algorithm explained"
+      ]
+    },
+    {
+      "id": "T04",
+      "title": "Promotions Service — Promotion Families",
+      "phase": "Phase 1: Promotions Service",
+      "status": "completed",
+      "completed_notes": "Deep-dive expanded all 8 family sections in business-logic.md. Each family now has: source file/class/line count, purpose statement, step-by-step algorithm walkthrough with code line references, key methods, error handling behavior, V1/V2 differences, concrete numerical examples from source comments. Added Math Utilities section documenting round_custom() (ROUND_HALF_UP for all retailers) and round_custom2() (legacy Eroski-specific floor rounding, unused). Expanded PromoFamilyFactory section with 12 methods including newly documented populate_sku_promo_application_info_undiscounted_items_current_layer() (V2-only), addons_populate_promo_group_sku_with_basket_qty_ungrouped_item_info(), get_unused_ungrouped_items_not_part_of_basket_promo_groups(), and detailed two-strategy discount distribution comparison. Added 6 new notable patterns: error handling inconsistencies across families, offset mechanism unique to Line Special, cross-family delegation pattern, free_item_missing hint, debug print statements in production, weight-based discounts. Added 7 new open questions to questions.md including class typo, debug print statements, legacy dead code, variant support, MUJI hacks.",
+      "description": "Document all 8 promotion family types: Easy, Easy+, Combo, Line Special, Basket Threshold, Basket Threshold with Discounted Target, Requisite Groups with Discounted Target, and Evenly Distributed Multiline Discount.",
+      "source_paths": [
+        "service.promotions/service/mpromo/promo_core/easy_promo_family.py",
+        "service.promotions/service/mpromo/promo_core/easy_plus_promo_family.py",
+        "service.promotions/service/mpromo/promo_core/combo_promo_family.py",
+        "service.promotions/service/mpromo/promo_core/line_special_promo_family.py",
+        "service.promotions/service/mpromo/promo_core/basket_threshold_promo_family.py",
+        "service.promotions/service/mpromo/promo_core/basket_threshold_with_discounted_target_promo_family.py",
+        "service.promotions/service/mpromo/promo_core/requisite_groups_with_discounted_target_promo_family.py",
+        "service.promotions/service/mpromo/promo_core/evenly_distributed_multiline_discount_promo_family.py",
+        "service.promotions/service/mpromo/math_util.py"
+      ],
+      "docs_to_update": [
+        "docs/promotions-service/business-logic.md"
+      ],
+      "acceptance_criteria": [
+        "Each of the 8 families documented with purpose, inputs, outputs",
+        "Discount calculation logic for each family explained",
+        "Examples of when each family type applies",
+        "Math utilities documented"
+      ]
+    },
+    {
+      "id": "T05",
+      "title": "Promotions Service — API, Utilities & Tests Summary",
+      "phase": "Phase 1: Promotions Service",
+      "status": "completed",
+      "completed_notes": "Created api-reference.md (new file). Documented all 12 API endpoints with method, path, request/response shapes, internal logic, and code line references. Detailed the 6 bulk transaction action types (c/d/u/n/g/s) with request formats and behavior. Documented PromotionBatchOperation helper class (bulk creation pipeline), SaveModelException, UPDATE_FIELDS whitelist (28 fields), all 6 model serializers and 6 request serializers, 3 deletion patterns (soft-delete, raw SQL hard-delete, ORM cascade). Updated overview.md with: Utility Functions section (elapsed_interval, send_slack_message with security concern for hardcoded Slack token), Background Tasks (promo_delete_job soft-delete cleanup), Management Commands (delete_promos with --softdelete/--deactivated/--dry-run/--batch-size), and comprehensive Test Coverage Summary (44 test files across 8 categories: CRUD, per-family evaluation, easy variants, evenly distributed proportional variants, cross-family combinations, best discount, special features, retailer-specific, management commands). Answered 3 open questions: V1/V2 selection is per-request via version field, mishipay_util.py purpose, cascading delete mechanisms. Added 6 new questions about unused serializers, raw SQL delete safety, V2 support gaps, hardcoded Slack token, dead code, test filename typos. Phase 1 (Promotions Service) is now complete.",
+      "description": "Document all API endpoints (views.py), utility functions, async tasks, management commands, and summarize the test coverage.",
+      "source_paths": [
+        "service.promotions/service/mpromo/views.py",
+        "service.promotions/service/mpromo/mishipay_util.py",
+        "service.promotions/service/mpromo/tasks.py",
+        "service.promotions/service/mpromo/management/commands/delete_promos.py",
+        "service.promotions/service/mpromo/tests/"
+      ],
+      "docs_to_update": [
+        "docs/promotions-service/api-reference.md",
+        "docs/promotions-service/overview.md"
+      ],
+      "acceptance_criteria": [
+        "Every API endpoint documented with method, path, request/response",
+        "Utility functions documented",
+        "Background tasks documented",
+        "Test coverage summary (what is tested, key scenarios)",
+        "Management commands documented"
+      ]
+    },
+    {
+      "id": "T06",
+      "title": "MishiPay Platform — Project Structure & Settings",
+      "phase": "Phase 2: MishiPay Platform Foundation",
+      "status": "completed",
+      "completed_notes": "Created docs/platform/overview.md. Documented: full project directory structure, Django settings analysis (3,007-line settings.py covering databases, caching, task queue, static files, logging, monitoring), all 48+ installed apps categorized into 5 groups (7 Django built-in, 21 third-party, 18 core platform, 14 feature/integration, 8 retailer-specific), complete middleware chain (13 middleware classes with 4 custom: StartupMiddleware for i18n/store/auth-header, SentryInterceptMiddleware for logging/Decathlon-block, MishiKeycloakAuthentication for JWT/guest-user auth, ProcessStatsMiddleware for Datadog latency), full URL routing table (30+ app routes, client config routes, system APIs, OpenAPI docs), REST Framework config, authentication backends (ModelBackend, Facebook, Google + Keycloak JWT), microservice connection map (7 services), logging infrastructure (7 handlers, 6 loggers via mishipay-python-logger), retailer configuration system (49 retailer directories), email config subsystem, test setup, global constants, cron jobs. Flagged notable patterns: hardcoded secrets, cache override bug, JWT without signature verification, Decathlon bundleid block. Added 6 new open questions.",
+      "description": "Document the main Django project structure, settings, middleware, URL routing, WSGI config, and top-level files (manage.py, permissions.py, conftest.py). This is the foundation everything else builds on.",
+      "source_paths": [
+        "MishiPay/mainServer/mainServer/",
+        "MishiPay/mainServer/manage.py",
+        "MishiPay/mainServer/permissions.py",
+        "MishiPay/mainServer/conftest.py",
+        "MishiPay/mainServer/_test.py",
+        "MishiPay/mainServer/pyproject.toml",
+        "MishiPay/mainServer/setup.cfg",
+        "MishiPay/mainServer/config/"
+      ],
+      "docs_to_update": [
+        "docs/platform/overview.md"
+      ],
+      "acceptance_criteria": [
+        "Django project settings documented (databases, middleware, installed apps)",
+        "URL routing structure documented",
+        "Middleware chain documented",
+        "Top-level permissions documented",
+        "All installed apps listed and categorized"
+      ]
+    },
+    {
+      "id": "T07",
+      "title": "MishiPay Platform — Core Module",
+      "phase": "Phase 2: MishiPay Platform Foundation",
+      "status": "completed",
+      "completed_notes": "Created docs/platform/core.md. Documented all 211 files across the mishipay_core module. 11 data models (legacy + v2) including ActionConstraint with eval()-based rule engine, Theme/ThemeProperty system, EntityProperty generic JSON config, Retailer, StoreDenomination, SDKLicenseVerification, DutyChargeFactor/Properties. 12 API endpoints (theme, store details, SDK verification, stores-by-country V1/V2, support tickets, Slack, Keycloak migration, denominations) plus 6 client config endpoints and 2 system API endpoints. RetailerSystemConfiguration V1/V2 wrapper system supporting 44 retailers with 6 setting categories. common_functions.py mega-file (4,200+ lines, 97 functions, 6 classes) covering email/receipt generation, store settings, data manipulation, date conversion. 5 interface classes (Base, Customer, Item, Order, Payment). Firebase notification system (dashboard topic + individual push + webpush). 7 permission classes, TransactionTokenAuthentication, custom exception handling, JSON logging infrastructure, 7 management commands, 88 email templates, 16 test files. Flagged security concerns: eval() in constraints, no-auth Slack/Keycloak endpoints, committed Firebase credentials, debug print() statements in production.",
+      "description": "Document mishipay_core — the foundational module. Focus on models, views, serializers, utilities. This module likely contains shared base classes, mixins, and utilities used across the platform.",
+      "source_paths": [
+        "MishiPay/mainServer/mishipay_core/"
+      ],
+      "docs_to_update": [
+        "docs/platform/core.md"
+      ],
+      "acceptance_criteria": [
+        "All models documented with fields and relationships",
+        "Core utilities and helper functions documented",
+        "Base classes and mixins documented",
+        "API endpoints documented",
+        "How other modules depend on core is documented"
+      ]
+    },
+    {
+      "id": "T08",
+      "title": "MishiPay Platform — Authentication & Configuration",
+      "phase": "Phase 2: MishiPay Platform Foundation",
+      "status": "completed",
+      "completed_notes": "Created docs/platform/authentication.md. Documented: full authentication flow diagram (Kong→Middleware→DRF), MishiKeycloakAuthentication middleware (JWT decode without verification, guest user auto-creation, duplicate customer self-healing), mishipay_authentication module (definition-driven guest checkout with 3 auth service types, RegisterOrLoginUserAsPerServiceType service, 2-phase mishid flow, GuestCheckoutInputSerializer), TransactionTokenAuthentication (one-time order-scoped tokens), 7 custom permission classes (ActiveStore, ActiveStaffShift, PriceOverride, IsAdminUser, InventoryUpdate, UserStore, ReadOnly), DRF default auth config (TokenAuth+Keycloak, AllowAny permissions). mishipay_config module: GlobalConfig model (key-value with cache-through semantics, PrettyJSONWidget admin, 3 migrations from 2022-2023), StoresConfigByRetailerView API (chain/region grouping), utility functions, marketing consent constants, test factory. mishipay base module: legacy Item model (extends SecureItem, barcode+store unique), MishipayStoreType (~1,088 lines implementing full retail lifecycle: item CRUD, order creation, multi-gateway payments Stripe/Verifone/Adyen, full/partial refunds, inventory management, Redis RFID tracking, Nedap/SATO external integrations), 5 legacy data migration commands. Flagged: JWT without signature verification, AllowAny default, dual guest user systems, hardcoded Nedap token and SATO credentials. Added 7 new open questions.",
+      "description": "Document mishipay_authentication (13 files) and mishipay_config (15 files). Cover auth flows, user models, permissions, and platform configuration management.",
+      "source_paths": [
+        "MishiPay/mainServer/mishipay_authentication/",
+        "MishiPay/mainServer/mishipay_config/",
+        "MishiPay/mainServer/mishipay/"
+      ],
+      "docs_to_update": [
+        "docs/platform/authentication.md"
+      ],
+      "acceptance_criteria": [
+        "Authentication flow documented (login, token, session)",
+        "User/permission models documented",
+        "Configuration management documented",
+        "Base mishipay module documented",
+        "Auth-related middleware or decorators documented"
+      ]
+    },
+    {
+      "id": "T09",
+      "title": "MishiPay Platform — Items Module Part 1 (Models & Serializers)",
+      "phase": "Phase 3: MishiPay Items & Commerce",
+      "status": "completed",
+      "description": "Document the items module models and serializers. This is the largest module (649 files). Focus on data models first — product structure, categories, pricing, attributes.",
+      "source_paths": [
+        "MishiPay/mainServer/mishipay_items/models/",
+        "MishiPay/mainServer/mishipay_items/models.py",
+        "MishiPay/mainServer/mishipay_items/serializers/",
+        "MishiPay/mainServer/mishipay_items/serializers.py",
+        "MishiPay/mainServer/mishipay_items/admin.py"
+      ],
+      "docs_to_update": [
+        "docs/platform/items.md"
+      ],
+      "acceptance_criteria": [
+        "All item-related models documented with fields",
+        "Product data structure explained (items, categories, pricing)",
+        "Serializer validation rules documented",
+        "Admin customizations noted"
+      ],
+      "completed_notes": "Documented 20 legacy models + 1 V2 model with full field tables, constraints, indexes, key methods, and custom managers. Documented 53+ serializers across serializers.py (91K) and serializers_v2.py (26K), organized into input/request, output/model, promotion, and composite response categories. Documented 17 admin registrations with import/export support. Also covered entity_base_classes.py (BasketProcedure), constants, country system, and discount constraints. Identified 7 open questions including dual category systems, potential dead code, and serializer duplication."
+    },
+    {
+      "id": "T10",
+      "title": "MishiPay Platform — Items Module Part 2 (Views & APIs)",
+      "phase": "Phase 3: MishiPay Items & Commerce",
+      "status": "completed",
+      "completed_notes": "Documented all 53 URL patterns across 3 API tiers (V1 public, internal service, V2 enhanced). Detailed 30+ view classes covering item scanning, basket CRUD, wishlist, manual verification, search, promotions, loyalty/rewards, inventory updates, and ratings. Documented store-type dispatch pattern, custom permissions, promotion helpers, and the three-tier architecture. Added 6 new open questions.",
+      "description": "Document the items module API endpoints, views, and URL routing. Understand how products are created, read, updated, and searched.",
+      "source_paths": [
+        "MishiPay/mainServer/mishipay_items/views/",
+        "MishiPay/mainServer/mishipay_items/views.py",
+        "MishiPay/mainServer/mishipay_items/viewsets/",
+        "MishiPay/mainServer/mishipay_items/urls.py",
+        "MishiPay/mainServer/mishipay_items/filters.py"
+      ],
+      "docs_to_update": [
+        "docs/platform/items.md"
+      ],
+      "acceptance_criteria": [
+        "All item API endpoints documented",
+        "CRUD operations for items documented",
+        "Search/filter capabilities documented",
+        "URL routing for items documented"
+      ]
+    },
+    {
+      "id": "T11",
+      "title": "MishiPay Platform — Items Module Part 3 (Business Logic)",
+      "phase": "Phase 3: MishiPay Items & Commerce",
+      "status": "completed",
+      "completed_notes": "Expanded items.md with comprehensive business logic documentation. Documented: promotion evaluation engine (mpay_promo.py, 780 lines) — EvaluateBasket flow, microservice adapter pattern, data model classes (Node/Group/Promotion), batch operations, item exclusion/category handling for 13+ store types; barcode scanning system (item_scan_functions.py, 549 lines) — 7 scan functions (mishipay/nedap/cisco/saturn/decathlon/avery_dennison), EAN-13/UPC-A normalization, EPC RFID decoding, NFC label support; promotion handlers subsystem (promotions/, 10 files, 123K) — 9 generic handlers (SetValue, DiscountPercent, BuyXforY, etc.), 4 retailer-specific handler modules (Compass/Eroski/Picwic/Relay), applicability check system, dynamic configuration system; store-type procedures (procedures/, 73 files) — 4-layer inheritance hierarchy (SimpleBasketProcedureV2 → PromotionBasketProcedureV2 → InventoryBasketProcedureV2 → retailer), key method overrides documented, 4 heavy retailer implementations detailed (DDF/FlyingTiger/MLSE/SSP); additional helpers — compass/picwic/dufry promotion helpers, loyalty ABC, VAT calculation system with store-specific formulas; retailer utilities — DDF quota management, Carters pricing payload decorator, MLSE item sorting, inventory service pagination; test coverage — 110 files, 744 test methods, 52K lines organized by retailer/feature. Noted missing paths: services/, tasks.py, signals.py, utils/ don't exist. Added 7 new notable patterns and 9 new open questions.",
+      "description": "Document the items module business logic: services, helpers, tasks, signals, and any complex item processing logic. Summarize test coverage.",
+      "source_paths": [
+        "MishiPay/mainServer/mishipay_items/services/",
+        "MishiPay/mainServer/mishipay_items/helpers/",
+        "MishiPay/mainServer/mishipay_items/tasks.py",
+        "MishiPay/mainServer/mishipay_items/signals.py",
+        "MishiPay/mainServer/mishipay_items/utils/",
+        "MishiPay/mainServer/mishipay_items/tests/"
+      ],
+      "docs_to_update": [
+        "docs/platform/items.md"
+      ],
+      "acceptance_criteria": [
+        "Item business logic documented",
+        "Background tasks documented",
+        "Signal handlers documented",
+        "Test coverage summarized",
+        "Integration with other modules noted"
+      ]
+    },
+    {
+      "id": "T12",
+      "title": "MishiPay Platform — Coupons, Special Promos & Promotions",
+      "phase": "Phase 3: MishiPay Items & Commerce",
+      "status": "completed",
+      "completed_notes": "Created docs/platform/coupons-promotions.md. Documented all 3 modules: (1) mishipay_coupons — 4 API endpoints, validate_coupons() with MUJI/Carters/Rotana store-specific branching, redeem_coupons_helper() order-completion flow, MS Loyalty Service delegation, referral code separation (R- prefix), 5 management commands for retailer-specific coupon imports. (2) mishipay_special_promos — 4 API endpoints, validate_special_promos() handling 4 input types (VOUCHER_DISCOUNT, DISCOUNT_GROUP_QUALIFIER, IT_GOVT_LOTTERY_CODE, DONATION), basket.special_promos JSON structure with sample, PromotionHelper class for on-the-fly promotions, prerequisite check system (Seventh Heaven advance payment coexistence), customer order history functions including disabled is_mishipoly_promo cross-retailer loyalty, 2 test files (1,120 lines). (3) promotions import framework — PromotionImport ABC (ETL pipeline: extract→clean→transform), 5 retailer-specific modules (Flying Tiger CSV, SAP ASC with node-level diffing, Grandiose multi-file parser, staff discount with category filtering, Odoo v17 XML-RPC), 12 management commands, coupon creation utility. Documented relationship to promotions microservice (indirect for coupons/special_promos, direct write for promotions import). Added 7 new open questions.",
+      "description": "Document mishipay_coupons (14 files), mishipay_special_promos (13 files), and the promotions module (82 files). These handle discount and promotional logic on the platform side.",
+      "source_paths": [
+        "MishiPay/mainServer/mishipay_coupons/",
+        "MishiPay/mainServer/mishipay_special_promos/",
+        "MishiPay/mainServer/promotions/"
+      ],
+      "docs_to_update": [
+        "docs/platform/coupons-promotions.md"
+      ],
+      "acceptance_criteria": [
+        "Coupon models, views, and logic documented",
+        "Special promotions module documented",
+        "Platform-side promotions module documented",
+        "Relationship to service.promotions microservice explained",
+        "How discounts flow through the system documented"
+      ]
+    },
+    {
+      "id": "T13",
+      "title": "MishiPay Platform — Emails Module",
+      "phase": "Phase 3: MishiPay Items & Commerce",
+      "status": "completed",
+      "completed_notes": "Created docs/platform/emails-alerts.md. Documented all 4 data models (EmailTemplate, EmailConfiguration, PrintReceiptTemplate, PrintReceiptConfiguration) with full field tables and constraints. Documented 8 receipt types (ORDER, REFUND, GIFT, STEB, PAYMENT_FAILED, COUNTER, PAYMENT, CAMPAIGN). Documented EmailHelper (hierarchical config lookup with 4-level priority) and PrintReceiptHelper (merging config lookup). Documented PrintReceipt base class (843 lines) — full receipt generation pipeline, 60+ context variables, item extraction with promo/addon/STEB support, Zatka QR code generation, order summary calculations, 7 receipt text formatting methods. Documented GeneratePosReceipt class (481 lines) — independent Epson POS receipt engine with section-by-section assembly, refund handling, cash/card payment display. Documented Strategy pattern: StrategyFactory, ContextUpdater, STRATEGY_MAPPING (18 ORDER, 6 REFUND, 1 STEB, 1 PAYMENT_FAILED, 2 GIFT strategies across 25 retailer files). Detailed 4 complex retailer strategies: Dubai Duty Free (DCC, boarding pass, STEB bags, NI EPOS terminal details, Visa campaign receipts), Flying Tiger (offline transactions, refund subtraction, special char removal), MLSE (Bucks/budget code/split payments, First Nations tax, addon item ordering), Carters (loyalty integration, till details, barcode generation). Documented 4 admin registrations with PrettyJSONWidget/PrettyTextWidget custom widgets, 2 ModelForms with dynamic store_type choices. Documented thank-you email configs in 9 languages. Noted: empty views.py (no REST API), no tasks.py/signals.py, dual receipt engines, class name typos. Added 7 new open questions.",
+      "description": "Document mishipay_emails (136 files). Cover email templates, sending logic, email types, integrations with Sendgrid/Sendinblue, and template management.",
+      "source_paths": [
+        "MishiPay/mainServer/mishipay_emails/"
+      ],
+      "docs_to_update": [
+        "docs/platform/emails-alerts.md"
+      ],
+      "acceptance_criteria": [
+        "Email models documented",
+        "Email sending logic and providers documented",
+        "Email template system documented",
+        "Types of emails sent documented",
+        "Integration with third-party email services documented"
+      ]
+    },
+    {
+      "id": "T14",
+      "title": "MishiPay Platform — Alerts & Subscriptions",
+      "phase": "Phase 3: MishiPay Items & Commerce",
+      "status": "completed",
+      "completed_notes": "Expanded emails-alerts.md with comprehensive Payment Alerts & Settlement Reconciliation section: 10 data models (PaymentAlert, RetailerCronJobBase abstract, RetailerImportJob, RetailerExportJob, SettlementOrder, SettlementOrderRefund, SettlementPayoutByDate, SettlementReconByDate, SettlementFinalSummary, SettlementFinalSummaryByPayoutDates) with full field tables. 5 alert types with auto-remediation actions (Stripe auto-refund, order status auto-update). 4 REST endpoints (import/export job tracking, payout reference updates — all with auth commented out). 9 management commands: 2 payment alert generators (Stripe + QuickPay), 4 settlement processors (MS Pay universal supporting 18 PSP variants, Stripe Connect, Nordic file-based with MobilePay CSV/Swish XML/Vipps XML, Checkout.com), 1 final aggregation report, 1 CSV reconciliation generator, 1 deprecated. Dashboard helper (1,379 lines) with combination-sum payout matching algorithm and retailer-specific CSV formatting. Created subscriptions-referrals.md: 6 models (Subscription, SubscriptionStoreMapping, CustomerSubscriptionMapping, CustomerSubscriptionTransaction, CustomerSubscriptionStateLog, CustomerSubscriptionUsageLog). Full subscription lifecycle documented (setup → subscribe → shop → manage → expire). 4 REST endpoints (customer status, Stripe checkout session, HMAC-secured webhook, billing portal). Business logic: daily usage tracking with quantity_max enforcement, order completion logging via BasketEntityAuditLog. Service client for MS Pay microservice. Management command for promotions microservice integration (100% Easy family discount creation). 18 migration files spanning Nov 2021–Oct 2023. Added 16 new open questions across both modules.",
+      "description": "Document mishipay_alerts (58 files) and mishipay_subscription (37 files). Cover alert types, notification channels, subscription models and management.",
+      "source_paths": [
+        "MishiPay/mainServer/mishipay_alerts/",
+        "MishiPay/mainServer/mishipay_subscription/"
+      ],
+      "docs_to_update": [
+        "docs/platform/emails-alerts.md",
+        "docs/platform/subscriptions-referrals.md"
+      ],
+      "acceptance_criteria": [
+        "Alert types and notification system documented",
+        "Alert delivery channels documented",
+        "Subscription models and lifecycle documented",
+        "Subscription management API documented"
+      ]
+    },
+    {
+      "id": "T15",
+      "title": "MishiPay Platform — Referrals & Dashboard",
+      "phase": "Phase 3: MishiPay Items & Commerce",
+      "status": "completed",
+      "completed_notes": "Expanded subscriptions-referrals.md with full Referral Program section: mishipay_referrals module (11 files, 606 lines) — stateless proxy pattern to MS Loyalty Service, 6 API endpoints (campaign CRUD, code generation/validation/redemption), smart retailer derivation from store data, complete referral flow documentation, no local models, 2 test files (436 lines). Created dashboard.md documenting both modules: (1) dashboard module (50 files, ~3,300 lines) — User model (23 fields including 8 permission booleans), Token model for invite-based onboarding, 8 authentication endpoints (login, passcode, QR, signup, password/PIN recovery), bulk user creation via CSV with DashboardUser/DDF_STAFF/DDF_ADMIN group assignment, 5 permission classes, DDF-specific tab permissions (11 tabs), 40+ API endpoints for orders/items/users/reporting. (2) mishipay_dashboard module (52 files, ~7,000+ lines) — RefundOrderNew model (5-state lifecycle), 38+ operational API endpoints, RefundOrderNewView (~1,665 lines with store-type PSP dispatch, multi-payment refund, basket update, analytics, RFID deactivation), 4-version order listing (v1-v4), Click & Collect status management, manual verification system (Eroski-specific logic), LLM chat via Anthropic Claude/LangChain with regex SQL sanitization, settlement reconciliation reports with CSV download, Dufry receipt generation, 14 test files (~300KB), 2 management commands (auto_verify_orders, analytics_reconciliation). Documented store-type dispatch pattern, dual-module architecture, permission inheritance model, configuration maps. Added 24 new open questions across 3 sections. Updated 00-index.md: Phase 3 now complete.",
+      "description": "Document mishipay_referrals (11 files), mishipay_dashboard (52 files), and dashboard (50 files). Cover referral program logic and admin dashboard features.",
+      "source_paths": [
+        "MishiPay/mainServer/mishipay_referrals/",
+        "MishiPay/mainServer/mishipay_dashboard/",
+        "MishiPay/mainServer/dashboard/"
+      ],
+      "docs_to_update": [
+        "docs/platform/subscriptions-referrals.md",
+        "docs/platform/dashboard.md"
+      ],
+      "acceptance_criteria": [
+        "Referral program models and logic documented",
+        "Dashboard features and views documented",
+        "Dashboard vs mishipay_dashboard distinction explained",
+        "Admin dashboard data and reports documented"
+      ]
+    },
+    {
+      "id": "T16",
+      "title": "MishiPay Platform — Retail Orders Part 1 (Models & Serializers)",
+      "phase": "Phase 4: MishiPay Retail Operations",
+      "status": "completed",
+      "completed_notes": "Created docs/platform/orders.md. Documented: Order model (25 fields, 6 composite indexes, complete_status() 150-line completion method with retailer-specific branches for WHSmith/FlyingTiger/Grandiose/Carters/Saudi Arabia, complete_status_extra() post-payment processing), Quota model (generic purchase limit tracking). 4 status enumerations (OrderStatus 6 states, OrderPaymentStatus 3 states, CCOrderStatus 7 states, ReceiptStatus 2 states) with lifecycle flow diagram. 15+ serializers across serializers.py and serializers_v2.py: CreateOrderSerializer (basket/address/approval validation), OrderBasketDetailsSerializer V1 (40+ computed fields), OrderBasketDetailsSerializerV2 (adds barcode/QR/loyalty/poslog-before-payment), BasketEntityAuditLogSerializerV3 (per-item pricing with promo details), OfflineMonolithSyncObjectSerializer (full offline sync), FailedOrdersSerializer. 2 permission classes (V1 with eval()-based EntityActionConstraint, V2 simplified). 9 store-type dispatch maps in app_settings.py (26K): CREATE_ORDER_FUNCTION_MAP (66 entries), ORDER_DETAILS_FUNCTION_MAP (68 entries), ORDER_FULFILMENT_FUNCTION_MAP (32 entries), EPC_SOLD/UNSOLD maps, RETAILER_PROFILE_FUNCTION_MAPPING (9 entries). Order sequencing system (o_id at checkout, transaction_id_poslog after payment, SELECT FOR UPDATE locking, per-device/per-store/per-device-type variants). Tax client selector (legacy vs new ms-tax service). 35 URL patterns across 5 categories. Django admin with bulk receipt resend action. 38 migrations spanning 2019-2025. Added 8 new open questions.",
+      "description": "Document mishipay_retail_orders models and serializers (223 files total). Focus on order data models, statuses, line items, and data validation.",
+      "source_paths": [
+        "MishiPay/mainServer/mishipay_retail_orders/models/",
+        "MishiPay/mainServer/mishipay_retail_orders/models.py",
+        "MishiPay/mainServer/mishipay_retail_orders/serializers/",
+        "MishiPay/mainServer/mishipay_retail_orders/serializers.py",
+        "MishiPay/mainServer/mishipay_retail_orders/admin.py"
+      ],
+      "docs_to_update": [
+        "docs/platform/orders.md"
+      ],
+      "acceptance_criteria": [
+        "All order models documented with fields and relationships",
+        "Order lifecycle and status transitions documented",
+        "Line item structure documented",
+        "Serializer validation rules documented"
+      ]
+    },
+    {
+      "id": "T17",
+      "title": "MishiPay Platform — Retail Orders Part 2 (Views & Logic)",
+      "phase": "Phase 4: MishiPay Retail Operations",
+      "status": "completed",
+      "completed_notes": "Expanded orders.md with comprehensive documentation of: 32 view classes (30 in views.py + 2 in whatsapp_view.py) with HTTP methods, permissions, business logic, and store-type dispatch patterns; order fulfilment system (83K order_fulfilment.py, 30+ retailer-specific functions integrating REST/SOAP/Kafka/Fiskaly/ZATCA/Odoo/Shopify/XStore/loyalty platforms); order details retrieval (5 functions with store-type-specific branching); receipt generation system (EmailReceipt class, 20+ retailer customizations, email delivery pipeline); RFID status tracking (7 vendor integrations: Redis, MishiPay, Nedap, SATO, Decathlon, iLab/Avery Dennison, Retail Reload); offline transaction sync (full flow from JSON to monolith DB with atomic transactions); saved card order flow (11 PSP-specific item creators); customer profile updates (6 functions for loyalty/incentive tracking); third-party integrations (Clover POS, Decathlon ERP, SAP POS 2.3 TLogs); WhatsApp receipt client (Meta Cloud API with phone hashing); Emaar sales reporting; 78 management commands (40+ poslog generators, fulfilment retry, financial reports); confirmed no tasks.py, signals.py, or services/ directory exist; test coverage summary (49 files, 17,808 lines, 20+ retailers). Added 12 new open questions. Updated 00-index.md and questions.md.",
+      "description": "Document mishipay_retail_orders views, URLs, business logic, tasks, and services. Cover order creation, processing, and completion workflows.",
+      "source_paths": [
+        "MishiPay/mainServer/mishipay_retail_orders/views/",
+        "MishiPay/mainServer/mishipay_retail_orders/views.py",
+        "MishiPay/mainServer/mishipay_retail_orders/urls.py",
+        "MishiPay/mainServer/mishipay_retail_orders/services/",
+        "MishiPay/mainServer/mishipay_retail_orders/tasks.py",
+        "MishiPay/mainServer/mishipay_retail_orders/signals.py",
+        "MishiPay/mainServer/mishipay_retail_orders/tests/"
+      ],
+      "docs_to_update": [
+        "docs/platform/orders.md"
+      ],
+      "acceptance_criteria": [
+        "All order API endpoints documented",
+        "Order processing workflow documented",
+        "Background tasks documented",
+        "Signal handlers documented",
+        "Test coverage summarized"
+      ]
+    },
+    {
+      "id": "T18",
+      "title": "MishiPay Platform — Retail Payments Part 1 (Models & Serializers)",
+      "phase": "Phase 4: MishiPay Retail Operations",
+      "status": "completed",
+      "description": "Document mishipay_retail_payments models and serializers (259 files total). Focus on payment models, transaction types, gateway configurations.",
+      "completed_notes": "Created docs/platform/payments.md covering: 8 data models (PaymentVariant, Payments, CustomerOptileProfile, SavedCard, PaymentProviderDetails, PayoutScheduler, PayoutSchedulerStoreMapping, PayoutRun), all enumerations and constants (PaymentStatus 12 states, PSPType 22 types, ENUM_PAYMENT_GATEWAY 35+ gateways, 25 legacy + 19 modern payment methods, 11 card brands, 170+ currencies), 50+ serializer classes organized by category (dispatchers, validators, model/session/verify/confirm/webhook/card/guest/MS Pay serializers), dual payment architecture (legacy provider_factory vs MS Pay microservice), 59 URL patterns across 3 tiers, 7 admin registrations with 4 payout actions, provider factory pattern, 21 PSP provider implementations, permissions, analytics, helpers, and utilities. Flagged 8 open questions including eval()-based permissions, no-op validation, plaintext API key storage, and N+1 query patterns.",
+      "source_paths": [
+        "MishiPay/mainServer/mishipay_retail_payments/models/",
+        "MishiPay/mainServer/mishipay_retail_payments/models.py",
+        "MishiPay/mainServer/mishipay_retail_payments/serializers/",
+        "MishiPay/mainServer/mishipay_retail_payments/serializers.py",
+        "MishiPay/mainServer/mishipay_retail_payments/admin.py"
+      ],
+      "docs_to_update": [
+        "docs/platform/payments.md"
+      ],
+      "acceptance_criteria": [
+        "All payment models documented with fields",
+        "Transaction types and statuses documented",
+        "Payment gateway configuration models documented",
+        "Serializer validation documented"
+      ]
+    },
+    {
+      "id": "T19",
+      "title": "MishiPay Platform — Retail Payments Part 2 (Views & Payment Logic)",
+      "phase": "Phase 4: MishiPay Retail Operations",
+      "status": "completed",
+      "completed_notes": "Documented all 40+ view classes in views.py (legacy, MS Pay, webhook handlers, Adyen-specific). Documented PaymentService class in ms_pay.py (payment session lifecycle, response handling, partial payments, refunds, void, EdfaPay, Walmart Pay, gift cards). Documented internal service APIs in api.py (7 views + 4 helpers). Added payment processing flow diagrams (legacy 3-step, MS Pay, partial payment). Added 4 new open questions.",
+      "description": "Document mishipay_retail_payments views, payment processing logic, gateway integrations (Stripe, Braintree, Adyen), and webhook handlers.",
+      "source_paths": [
+        "MishiPay/mainServer/mishipay_retail_payments/views/",
+        "MishiPay/mainServer/mishipay_retail_payments/views.py",
+        "MishiPay/mainServer/mishipay_retail_payments/urls.py",
+        "MishiPay/mainServer/mishipay_retail_payments/services/",
+        "MishiPay/mainServer/mishipay_retail_payments/tasks.py",
+        "MishiPay/mainServer/mishipay_retail_payments/tests/"
+      ],
+      "docs_to_update": [
+        "docs/platform/payments.md"
+      ],
+      "acceptance_criteria": [
+        "All payment API endpoints documented",
+        "Payment flow documented (initiation → processing → confirmation)",
+        "Gateway integration logic documented (Stripe, Braintree, Adyen)",
+        "Webhook handlers documented",
+        "Error handling and retry logic documented"
+      ]
+    },
+    {
+      "id": "T20",
+      "title": "MishiPay Platform — Retail Customers",
+      "phase": "Phase 4: MishiPay Retail Operations",
+      "status": "completed",
+      "description": "Document mishipay_retail_customers (77 files). Cover customer models, profiles, loyalty, and customer-facing APIs.",
+      "source_paths": [
+        "MishiPay/mainServer/mishipay_retail_customers/"
+      ],
+      "docs_to_update": [
+        "docs/platform/customers.md"
+      ],
+      "acceptance_criteria": [
+        "Customer models documented",
+        "Customer profile management documented",
+        "Customer-facing APIs documented",
+        "Loyalty/points integration documented if present",
+        "Customer data flow documented"
+      ],
+      "completed_notes": "Created comprehensive customers.md covering: 9 data models (TransactionToken, CustomerAddress, CustomerFeedback, PrivacyPolicyInformation, PushNotificationPermission, RetailerSpecificCustomerProfile, PastPurchase/PastPurchaseRecord, MarketingConsentInfo, BuyerAddress). 11 public endpoints + 4 BuyerAddress REST API endpoints + 3 internal service APIs. 15+ retailer loyalty service integrations documented (Picwic, Eroski, Azpiral, Desigual, Virgin, Carters, Grandiose, Flying Tiger, Seventh Heaven/Reelo, MMI, Event Network, Hudson, and more). Privacy policy versioned consent system, marketing consent with GDPR compliance, boarding pass processing for duty-free, encryption utilities."
+    },
+    {
+      "id": "T21",
+      "title": "MishiPay Platform — Retail Analytics & Jobs",
+      "phase": "Phase 4: MishiPay Retail Operations",
+      "status": "completed",
+      "description": "Document mishipay_retail_analytics (64 files) and mishipay_retail_jobs (14 files). Cover analytics data collection, reporting, and background job processing.",
+      "source_paths": [
+        "MishiPay/mainServer/mishipay_retail_analytics/",
+        "MishiPay/mainServer/mishipay_retail_jobs/"
+      ],
+      "docs_to_update": [
+        "docs/platform/analytics.md"
+      ],
+      "acceptance_criteria": [
+        "Analytics models and data collection documented",
+        "Reports and aggregation logic documented",
+        "Background jobs documented",
+        "Job scheduling and execution documented"
+      ],
+      "completed_notes": "Created docs/platform/analytics.md covering: event-sourced analytics architecture (18 models with Subject-Verb-Object pattern, stored procedure for atomic creation), 10 API endpoints (V1 event-based + V2 aggregated, V1 paths now silently serve V2 views), 10 event builder classes, 6 CSV migration management commands, currency conversion via Exchange Rate API, geofencing logic, Dramatiq background job framework (5 tasks including refund processing, async HTTP, POSLOG generation), CustomAdminMiddleware for task lifecycle tracking, admin configuration for all models. Notable findings: hardcoded Exchange Rate API key, AnalyticsDashboard view has no permissions, JourneyTypes.NOT_AVAILABLE trailing comma bug, AggregatedAnalytics population mechanism not found in this module."
+    },
+    {
+      "id": "T22",
+      "title": "MishiPay Platform — Cashier Kiosk",
+      "phase": "Phase 4: MishiPay Retail Operations",
+      "status": "completed",
+      "completed_notes": "Created docs/platform/cashier-kiosk.md. Documented all 3 data models (KioskStaffShift with 24 fields, KioskStaffShiftSummary with 11 fields, KioskStaffShiftActivity with 7 fields) with full field tables, constraints, and indexes. 4 REST API endpoints (start-shift, end-shift, list-shifts, get-active-shift) with request/response formats and validation rules. Cash balance validation (two accounting equations). Shift lifecycle diagram with two-track transaction tracking (cash-only KioskStaffShiftActivity records vs all-payment extra_data lists). Integration points: Order.complete_status() triggers shift activity on android_cashier_kiosk platform, RefundOrderNewView triggers refund activity, ActiveStaffShiftPermission enforces shift validation. Kafka integration via CashDeskEndShiftEventProducerAdapter (Flying Tiger only, topic: flying_tiger.cash_desk.staff_shifts.end_shift_event). 3 admin registrations, schema evolution (9 migrations March-October 2023), test coverage (8 tests including full end-to-end shift→order→refund→end flow). Noted 7 patterns/concerns: bare except clauses, naive datetime, non-atomic Kafka publish, float denomination validation, N+1 query, race condition on counters, confusing sales_count naming. Added 7 new open questions.",
+      "description": "Document mishipay_cashier_kiosk (20 files). Cover POS kiosk functionality, hardware integration, and checkout flow.",
+      "source_paths": [
+        "MishiPay/mainServer/mishipay_cashier_kiosk/"
+      ],
+      "docs_to_update": [
+        "docs/platform/cashier-kiosk.md"
+      ],
+      "acceptance_criteria": [
+        "Kiosk models documented",
+        "POS checkout flow documented",
+        "Hardware integration points documented",
+        "Kiosk APIs documented"
+      ]
+    },
+    {
+      "id": "T23",
+      "title": "MishiPay Platform — DOS Integration Part 1 (Models & Core)",
+      "phase": "Phase 5: MishiPay Integrations & Retailers",
+      "status": "completed",
+      "completed_notes": "Created docs/platform/retailer-modules.md with comprehensive DOS Part 1 documentation: 12 data models (Store, Customer, Order, Item, SecureItem, TransactionHistory, Coupon, Device, Feedback, Gate, AppVersionDetails, ModelSerializer), agent/item inheritance hierarchy (5 agent implementations), StoreType strategy pattern with 100+ retailer map, 3 payment gateway classes (PayUnity, PayPal/Braintree, Stripe), OrderHelper logic, 7 serializers including ClosestStoreDetailSerializer with feature flags, utility functions (MQTT publishing, geofencing, receipts, refund calculations), geo service, DatabaseDao, permissions, decorators, MQTT client, migration scripts. Identified dead code (bypassed auth decorator, unreachable psp_details logic), dual MQTT broker publishing pattern, and duplicated cal_key() function.",
+      "description": "Document the DOS retailer integration module models and core logic (363 files total). DOS is the largest retailer integration. Focus on data models and core business logic.",
+      "source_paths": [
+        "MishiPay/mainServer/dos/models/",
+        "MishiPay/mainServer/dos/models.py",
+        "MishiPay/mainServer/dos/serializers/",
+        "MishiPay/mainServer/dos/serializers.py",
+        "MishiPay/mainServer/dos/services/",
+        "MishiPay/mainServer/dos/utils/"
+      ],
+      "docs_to_update": [
+        "docs/platform/retailer-modules.md"
+      ],
+      "acceptance_criteria": [
+        "DOS module purpose and scope documented",
+        "DOS-specific data models documented",
+        "Core business logic documented",
+        "Service layer documented"
+      ]
+    },
+    {
+      "id": "T24",
+      "title": "MishiPay Platform — DOS Integration Part 2 (Views & APIs)",
+      "phase": "Phase 5: MishiPay Integrations & Retailers",
+      "status": "completed",
+      "completed_notes": "Documented all DOS views, URL routing (174 lines, ~70 endpoints), and API patterns. Covered 10 view files: store.py (1121 lines — store discovery with geofencing, clustering, 6 versioned endpoints), customer.py (2464 lines — email/guest/social auth for Apple/Facebook/Google/Decathlon, OTP, auto-registration, profile, password recovery, feedback, device registration), order.py (917 lines — order CRUD, two-phase payment confirmation, Stripe/JudoPay/Spreedly key endpoints), item.py (401 lines — barcode scanning with global fallback, promotions, shopping bags), payment.py (1215 lines — 9 payment platforms: JudoPay, Stripe, PayUnity, PayPal, XPay, OnePay, Verifone, Adyen, Apple Pay, Google Pay), gate.py (142 lines — exit gate hardware), coupon.py (30 lines), socket.py (36 lines), ingenico.py (72 lines), app_specific_views.py (73 lines). Documented 7 analytics event types, 18 test files, and resolved the Agent vs StoreType relationship question from T23. Identified 8 open questions including hardcoded store IDs, disabled per_store flag, placeholder endpoints, and test naming inconsistencies.",
+      "description": "Document DOS views, URL routing, API endpoints, tasks, and test coverage. Complete the DOS integration documentation.",
+      "source_paths": [
+        "MishiPay/mainServer/dos/views/",
+        "MishiPay/mainServer/dos/views.py",
+        "MishiPay/mainServer/dos/urls.py",
+        "MishiPay/mainServer/dos/tasks.py",
+        "MishiPay/mainServer/dos/tests/"
+      ],
+      "docs_to_update": [
+        "docs/platform/retailer-modules.md"
+      ],
+      "acceptance_criteria": [
+        "DOS API endpoints documented",
+        "Integration flow with external DOS systems documented",
+        "Background tasks documented",
+        "Test coverage summarized"
+      ]
+    },
+    {
+      "id": "T25",
+      "title": "MishiPay Platform — Third-Party Integrations & Microservices Client",
+      "phase": "Phase 5: MishiPay Integrations & Retailers",
+      "status": "completed",
+      "description": "Document third_party_integrations (33 files) and microservices_client (8 files). Cover how the platform communicates with external services and internal microservices.",
+      "source_paths": [
+        "MishiPay/mainServer/third_party_integrations/",
+        "MishiPay/mainServer/microservices_client/",
+        "MishiPay/mainServer/tax_pb2.py",
+        "MishiPay/mainServer/tax_pb2_grpc.py"
+      ],
+      "docs_to_update": [
+        "docs/platform/integrations.md"
+      ],
+      "acceptance_criteria": [
+        "All third-party integrations listed and documented",
+        "Microservices client documented (how monolith calls microservices)",
+        "gRPC service definitions documented (tax)",
+        "External API communication patterns documented"
+      ],
+      "completed_notes": "Created docs/platform/integrations.md covering: (1) OAuth2 provider framework with 3 data models (OAuthApplication, OAuthAccount, OAuthToken), 8 API endpoints, dual Decathlon integration paths (legacy direct-API and OAuth2 callback flow), profile sync/update workflows, error handling; (2) microservices_client in-process service bus with 7 client classes (30+ methods) covering items, payments, orders, customers, analytics, and third-party auth; (3) gRPC Tax service with 4 RPCs (EvaluateTax, GetStoreTaxTable, ImportStoreTaxCodeData, DeleteStoreTaxTable) and 12 protobuf message types. Identified 7 open questions including legacy code path viability, unused provider definitions, and Israel discount logic."
+    },
+    {
+      "id": "T26",
+      "title": "MishiPay Platform — Retailer Modules (Dixons, Decathlon, Cisco, etc.)",
+      "phase": "Phase 5: MishiPay Integrations & Retailers",
+      "status": "completed",
+      "completed_notes": "Documented all 6 retailer modules as Part 3 of retailer-modules.md. Each module covers: purpose, data models, key methods with line references, payment gateways, RFID tracking, configuration, and notable issues. Identified 7 common patterns (barcode sanitization, promotions stub, DOS utility dependency, Redis RFID tracking, payment gateway diversity, receipt approaches, VAT hardcoding). Added 8 open questions to questions.md. Updated 00-index.md to reflect Phase 5 completion (4/4 tasks).",
+      "description": "Document the smaller retailer-specific modules: dixons (6), decathlon (4), leroy_merlin (2), cisco (12), lego (2), mango (4). These are smaller integrations that can be covered together.",
+      "source_paths": [
+        "MishiPay/mainServer/dixons/",
+        "MishiPay/mainServer/decathlon/",
+        "MishiPay/mainServer/leroy_merlin/",
+        "MishiPay/mainServer/cisco/",
+        "MishiPay/mainServer/lego/",
+        "MishiPay/mainServer/mango/"
+      ],
+      "docs_to_update": [
+        "docs/platform/retailer-modules.md"
+      ],
+      "acceptance_criteria": [
+        "Each retailer module documented with purpose and scope",
+        "Retailer-specific customizations documented",
+        "Common patterns across retailer modules identified",
+        "Integration points with core platform documented"
+      ]
+    },
+    {
+      "id": "T27",
+      "title": "MishiPay Platform — Inventory Module",
+      "phase": "Phase 6: MishiPay Support Modules",
+      "status": "completed",
+      "completed_notes": "Created docs/platform/inventory.md. Documented: architecture diagram (proxy layer + batch import pipeline + basket service), 7 API proxy endpoints with post-processing logic (category/sub-category sorting, Love's/Grandiose item sorting), basket service layer (10 functions: item lookup, basket item creation, bulk creation, stock checking, EPC/RFID support), item variant mapper (Inventory Service → BasketItem field mapping), Reduce to Clear barcode system (25-char Avery Dennison format with Luhn validation, fixed/percent-off pricing), 6 client modules (Breeze Thru CSV, Express Lane CSV+catalog, Muji UTF-16 with 95 colour mappings, Stellar multi-file TSV with tax upload, Nude Foods WooCommerce API, WooCommerce client with auto-pagination), 35 management commands across 25+ retailers (Pattern A monolith DB vs Pattern B Inventory Service), shared utilities (NumPy bulk upsert, UPC-A checksum, timing decorator), testing infrastructure (Faker-based variant factory, 20+ test files). Identified duplicated bulk upsert implementations, missing Stellar tests, copy-paste docstring errors, no-auth API endpoints, no-timeout proxy calls. Added 9 new open questions.",
+      "description": "Document the inventory module (119 files). Cover inventory management, stock tracking, MongoDB integration, and real-time inventory updates.",
+      "source_paths": [
+        "MishiPay/mainServer/inventory/"
+      ],
+      "docs_to_update": [
+        "docs/platform/inventory.md"
+      ],
+      "acceptance_criteria": [
+        "Inventory models documented",
+        "Stock tracking logic documented",
+        "MongoDB integration documented",
+        "Inventory update flow documented",
+        "APIs documented"
+      ]
+    },
+    {
+      "id": "T28",
+      "title": "MishiPay Platform — Lib Module",
+      "phase": "Phase 6: MishiPay Support Modules",
+      "status": "completed",
+      "description": "Document the lib module (78 files). This likely contains shared libraries, utilities, and base classes used across the platform.",
+      "completed_notes": "Documented all 5 lib sub-packages: backend_profiling (Django profiling middleware with plugin architecture, SQL/memory/CPU profiling modules - currently disabled), explorer (vendored django-sql-explorer v1.1.2 with query IDE, export system, schema browser, SQL safety blacklist), pyoptile (Optile/Payoneer payment gateway client with Charge/List/Customer/Registration resources), python_bcbp (IATA boarding pass barcode decoder for duty-free), and logging (requests.Session JSON logger). Found copy-paste bug in charge.py:113, Python 2 incompatibilities in stack.py, debug print() statements throughout, overly broad SQL blacklist blocking common column names, and default CHANGEME API token. Added 9 open questions to questions.md.",
+      "source_paths": [
+        "MishiPay/mainServer/lib/"
+      ],
+      "docs_to_update": [
+        "docs/platform/core.md"
+      ],
+      "acceptance_criteria": [
+        "All shared utilities documented",
+        "Base classes and mixins documented",
+        "Library functions categorized by purpose",
+        "Usage patterns documented"
+      ]
+    },
+    {
+      "id": "T29",
+      "title": "MishiPay Platform — Admin, Analytics & Clients",
+      "phase": "Phase 6: MishiPay Support Modules",
+      "status": "completed",
+      "completed_notes": "Expanded analytics.md with: legacy analytics module (5 models: AppEvents, SaturnSalesSummary, SalesSummary, Notification, StoreNotification), EventRecordView API endpoint, 5 admin registrations, 20 migrations. analytics_library Mixpanel integration (EventInterface with Mixpanel/Dummy backends, EventType with 15 event methods — 9 active with common params, 6 legacy stubs sending empty strings), dual-store-type Mixpanel tokens, async buffered consumer. Created support-modules.md with: admin_actions — full documentation of operational tooling framework (2 models: AdminPrivilege with dynamic Python class path, AdminAction with audit logging and run() via __import__), 5 action classes (SendEmail, CreateStore, CreatePaymentVariant, CreateTheme, DashboardToken), 5 action forms + 2 config forms (two-step pre-population), 2 serializers, dynamic PaymentProviderClassChoices discovery via pkgutil, 2 staff-only Django views, admin with run action + queryset filtering. clients module: AzureStorageClient (Blob upload with 30-min SAS tokens), PromoServiceV2Helper (GET promotions by retailer/store, CSV export via PromoHeaderRow with 21 attributes/18 CSV columns, Azure upload). Flagged: dynamic code execution via __import__(), TODO permission bypasses, non-atomic object_id increment, no-auth EventRecordView, no-timeout HTTP calls, hardcoded test path in Azure client. Added 17 new open questions across 3 sections.",
+      "description": "Document admin_actions (18 files), analytics (26 files), analytics_library (3 files), and clients (3 files).",
+      "source_paths": [
+        "MishiPay/mainServer/admin_actions/",
+        "MishiPay/mainServer/analytics/",
+        "MishiPay/mainServer/analytics_library/",
+        "MishiPay/mainServer/clients/"
+      ],
+      "docs_to_update": [
+        "docs/platform/analytics.md",
+        "docs/platform/support-modules.md"
+      ],
+      "acceptance_criteria": [
+        "Admin actions documented",
+        "Analytics collection and reporting documented",
+        "Analytics library documented",
+        "Client management documented"
+      ]
+    },
+    {
+      "id": "T30",
+      "title": "MishiPay Platform — Shopping, RFID & Jobs",
+      "phase": "Phase 6: MishiPay Support Modules",
+      "status": "completed",
+      "completed_notes": "Expanded support-modules.md with 4 new module sections. (1) shopping_list: 3 data models (ShoppingList, ShoppingListItem, ShoppingListItemV2 with denormalized JSON snapshot from inventory service), dual v1/v2 architecture, 19 API endpoints across v1/v2, transfer-to-basket service (one-by-one HTTP calls with FIXME for bulk), 8 serializers with two-layer authorization, comprehensive test suite (~925 lines across 6 files), N+1 query concern in v1 serializer. (2) rfid: single unauthenticated POST endpoint for Keonn RFID gate hardware, Redis-based EPC sold/unsold lookup with case-sensitivity workaround, broader RFID ecosystem documented (7 vendor integrations in rfid_status.py: Redis, MishiPay items, Nedap, SATO, Decathlon, Avery Dennison/iLab SOAP, Retail Reload/Mainetti), store-type dispatch maps. (3) jobs: 4 scheduled cron jobs via django-cron (2 order Excel reports via xlwt, 2 daily analytics HTML emails) for Saturn and Decathlon, Template Method pattern, hardcoded email recipients, timezone handling bug, no tests. (4) pubsub: Kafka-based pub/sub framework using Confluent Kafka with SASL/SSL, 8 topics, 6 producer adapters, 3 consumer daemons (PostPaymentSuccess, Common with multiplexed routing, ExternalPaymentsAnalytics), 3 management commands, mutable default timestamp bug, no DLQ, consumer group collision risk. Resolved T21 question: AggregatedAnalytics is populated via ExternalPaymentsAnalyticsHandler from Kafka topic. Added 31 new open questions across all 4 modules.",
+      "description": "Document shopping_list (21 files), rfid (4 files), jobs (3 files), and pubsub (24 files).",
+      "source_paths": [
+        "MishiPay/mainServer/shopping_list/",
+        "MishiPay/mainServer/rfid/",
+        "MishiPay/mainServer/jobs/",
+        "MishiPay/mainServer/pubsub/"
+      ],
+      "docs_to_update": [
+        "docs/platform/support-modules.md"
+      ],
+      "acceptance_criteria": [
+        "Shopping list feature documented",
+        "RFID integration documented",
+        "Background job infrastructure documented",
+        "Pub/sub messaging system documented (Kafka/RabbitMQ)"
+      ]
+    },
+    {
+      "id": "T31",
+      "title": "MishiPay Platform — Saturn, Easy Store Creation",
+      "phase": "Phase 6: MishiPay Support Modules",
+      "status": "completed",
+      "completed_notes": "Documented saturn (SaturnStoreType with DFL API integration, SOAP fulfilment, PayUnity/PayPal payments, Redis EPC tracking), saturn_smart_pay (SaturnSmartPayStoreType with CAR-NICE API, NFC labels, XPay/Apple Pay/Google Pay, Pfand handling, two-phase order flow, migration commands), and easy_store_creation (template-based store cloning, MS-Pay payment variant replication, theme copying, bulk CSV upload/download for inventory/promotions/tax, Bitly URL generation). Added 19 open questions across all three modules.",
+      "description": "Document saturn (12 files), saturn_smart_pay (8 files), and easy_store_creation (23 files).",
+      "source_paths": [
+        "MishiPay/mainServer/saturn/",
+        "MishiPay/mainServer/saturn_smart_pay/",
+        "MishiPay/mainServer/easy_store_creation/"
+      ],
+      "docs_to_update": [
+        "docs/platform/support-modules.md"
+      ],
+      "acceptance_criteria": [
+        "Saturn integration documented",
+        "Saturn Smart Pay documented",
+        "Easy store creation workflow documented",
+        "Store onboarding process documented"
+      ]
+    },
+    {
+      "id": "T32",
+      "title": "MishiPay Platform — Fiscalisation, DDF & PubSub",
+      "phase": "Phase 6: MishiPay Support Modules",
+      "status": "completed",
+      "completed_notes": "Expanded docs/platform/support-modules.md with two new module sections. (1) fiscalisation (26 files): 2 data models (VenistarFiscalisation with 4 fields for Italy/Retail Pro workflow, Fiscalisation with 3 fields for Greece/Funky Buddha workflow), 5 API endpoints across 2 country-specific workflows (Venistar 4-step polling-based discovery→details→registration→completion for Italy, Funky Buddha callback-based mark ID registration for Greece), 5 serializers including SaleSIDDetailsSerializer with per-item discount integrity check (RuntimeError on mismatch), Italian Lotteria degli Scontrini lottery code extraction, Greek AADE myDATA mark ID handling with receipt gating, FiscalisationPermission (store-type + region group-based), PostTransactionSuccessHandler pub/sub integration, venistar_fiscalisation_email_alert management command for stuck fiscalisations, 2 admin registrations, 3 migrations (2021-2023), comprehensive test suite (747 lines across 4 files). (2) ddf_price_activation (22 files): 3 data models (RpmFiles for file tracking, ItemsForPriceActivation with 12 fields including download/activation audit trail and 3 composite indexes, PriceActivationPage dummy model for admin UI injection), 3-phase workflow (automated RPM JSON file ingestion with BOM/chardet encoding detection, manual staff CSV download with 12 columns, manual price activation via InventoryV1Client with deduplication by record_id and 10-week lookback), custom Django admin operational page (Bootstrap 5 + jQuery), DdfPriceActivationFullAccessPermission group-based auth, DashboardUser staff credential validation (DDF-{staff}-{pass} pattern), atomic transactions throughout, 7 migrations (all Oct 2023). Added 15 new open questions across both modules. Phase 6 (Support Modules) is now complete (6/6 tasks).",
+      "description": "Document fiscalisation (25 files) and ddf_price_activation (20 files). Cover fiscal compliance, receipt generation, and DDF pricing.",
+      "source_paths": [
+        "MishiPay/mainServer/fiscalisation/",
+        "MishiPay/mainServer/ddf_price_activation/"
+      ],
+      "docs_to_update": [
+        "docs/platform/support-modules.md"
+      ],
+      "acceptance_criteria": [
+        "Fiscal compliance requirements documented",
+        "Receipt/invoice generation documented",
+        "DDF price activation logic documented",
+        "Country/region-specific fiscal rules documented"
+      ]
+    },
+    {
+      "id": "T33",
+      "title": "Infrastructure — Docker & Service Architecture",
+      "phase": "Phase 7: Infrastructure & DevOps",
+      "status": "completed",
+      "completed_notes": "Created docs/03-infrastructure.md. Documented: 4 monolith compose files (dev with 22 services, prod with 7 services, test overlay, CI overlay) + 2 promotions service compose files. Full service catalog with 22 containers organized into application (4), microservices (8), infrastructure (5), databases (8). Dual-network architecture (mpay_pub open + mpay_net private) with explicit IPAM subnets in production. Both Dockerfiles (monolith python:3.9.9 with Azure CLI + ODBC, promotions python:3.9.9 with MySQL client). Gunicorn config (gthread, 3 workers × 4 threads, ddtrace-run, statsd to Datadog). Nginx reverse proxy (rate limiting, CORS, SSL, security headers, static file serving, mpay_proxy to backend_v2:8080). Kong API Gateway (7 route services, jwt-keycloak plugin, 10 API consumers). Keycloak IdP (Postgres backend, JGroups clustering ports in prod). 5 database systems (PostgreSQL + 2× Percona MySQL + 2× MySQL + 2× MongoDB + Elasticsearch) with init scripts. Environment configuration (4 variants per service: local/dev/test/prod, key env vars for all microservices). Datadog monitoring (EU region, APM + logs + tracing + process monitoring). Volume mount strategy (10 host mounts for data exchange). Dev vs prod vs test vs CI differences. Service communication patterns table (16 inter-service connections). Kafka consumer containers (3 consumers, same image different CMD). Added 7 new open questions.",
+      "description": "Document all Docker files, docker-compose configurations, service architecture, networking, and environment setup across both repos.",
+      "source_paths": [
+        "MishiPay/Dockerfile",
+        "MishiPay/docker-compose.yml",
+        "MishiPay/docker-compose-prod.yml",
+        "MishiPay/docker-compose-test.yml",
+        "MishiPay/docker-compose-ci.yml",
+        "MishiPay/automation/docker/",
+        "service.promotions/Dockerfile",
+        "service.promotions/docker-compose.yml",
+        "service.promotions/docker-compose-azure-ci.yml"
+      ],
+      "docs_to_update": [
+        "docs/03-infrastructure.md"
+      ],
+      "acceptance_criteria": [
+        "All services in docker-compose documented",
+        "Service networking and port mapping documented",
+        "Environment variable requirements documented",
+        "Development vs production vs CI differences documented"
+      ]
+    },
+    {
+      "id": "T34",
+      "title": "Infrastructure — CI/CD Pipelines",
+      "phase": "Phase 7: Infrastructure & DevOps",
+      "status": "completed",
+      "completed_notes": "Created docs/platform/infrastructure.md and expanded docs/03-infrastructure.md. Documented: 5 Azure Pipeline VMSS deployment files (test auto-trigger, 2 prod backend manual, 2 prod consumers manual) with two strategies (simple rolling update vs graceful Application Gateway traffic drain with 60s sleep). Makefile with 10 dev targets (pytest, Django test, flake8, migrate, makemigrations, i18n for 12 locales, gRPC proto generation). Branch strategy (master=prod manual, test=staging auto). Production cron jobs — 20+ active on backend server (thank-you emails for MishiPay/Decathlon, Decathlon payment verification every 2 min, per-retailer inventory upload and POSLOG generation for Lagardere, Picwic, Dufry, BWG, Fast Eddy's, Eroski, Muji, Flying Tiger) and 15+ on SFTP server (retailer FTP/SFTP downloads, rclone sync to Azure Blob Storage containers). Operational scripts (DB reset/restore from production dump via SSH, legacy rsync+uwsgi deploy, Decathlon POS log supervisord deploy). No GitHub Actions workflows exist for the monolith. No build pipeline in repo — Docker image built externally. Promotions service CI/CD cross-referenced from T01. Added monolith vs promotions CI/CD comparison table. Added 8 new open questions.",
+      "description": "Document all CI/CD pipelines: Azure Pipelines, GitHub Actions, Makefile targets. Cover the build, test, deploy workflow.",
+      "source_paths": [
+        "MishiPay/azure-pipelines*.yml",
+        "MishiPay/.github/workflows/",
+        "MishiPay/Makefile",
+        "service.promotions/.azure/",
+        "service.promotions/.github/workflows/"
+      ],
+      "docs_to_update": [
+        "docs/03-infrastructure.md",
+        "docs/platform/infrastructure.md"
+      ],
+      "acceptance_criteria": [
+        "All CI/CD pipelines documented with triggers and stages",
+        "Build process documented",
+        "Test pipeline documented",
+        "Deployment process documented",
+        "Branch strategy documented"
+      ]
+    },
+    {
+      "id": "T35",
+      "title": "Infrastructure — Ansible Deployment & Configuration",
+      "phase": "Phase 7: Infrastructure & DevOps",
+      "status": "completed",
+      "completed_notes": "Expanded docs/platform/infrastructure.md with 5 major new sections. (1) Ansible Production Deployment: HAProxy-based zero-downtime playbook (deploy-prod.yml with serial:1 disable→deploy→enable cycle), hosts.yml inventory (2 active backend servers 10.0.5.10/11, 2 LBs 10.0.3.20/21, 6 commented-out hosts), community.general collection dependency, full Molecule test framework (Docker mock HAProxy+backend, converge/verify/destroy workflow, TestInfra tests), Ansible vs Azure Pipelines comparison table. (2) Configuration Management: 72 files in conf/ covering 6 microservices × 4 environments (local/dev/test/prod), backend monolith config (microservice routing for 6 services, Kafka, Azure Storage, encryption keys), Kong API Gateway declarative config (6 services, routes, JWT-Keycloak auth, API consumers with key-auth), Nginx config (rate limiting 5 req/s, CORS, security headers, static caching), Gunicorn config (3 workers × 4 threads, gthread, ddtrace-run, StatsD), Keycloak auth, Konga admin, secrets management directory. (3) Database Initialization: PostgreSQL (init.sh + quarterly pg_dump files for mpay/test_mpay), MySQL for promotions/loyalty (000.sql + 001.sql in ms.promo/mysqld_init), MySQL for tax (000.sql + up/down migration for tax_level table with UUID PK), MongoDB inventory (custom entrypoint with replica set keyfile + JS init creating root + app users with SCRAM-SHA-1). (4) Eroski ETL Pipeline: eroski_cron.py (hourly for 4 stores, SFTP download, binary .DAT extraction via strings, Docker exec Django import), eroski_delta.py (error recovery), eroski_item_recommendations_promotions_upload.py (400+ product groups, HTTP batch creation). (5) Extended Scripts Inventory: 48 one-off scripts (config/setup, data fixes, integrity checks, exports), 13 scratch/analytics scripts, expanded helper scripts with external service details (Nedap HTTP, MQTT broker, Gmail SMTP), 9 legacy scripts. Added 11 new open questions to questions.md and infrastructure.md. Updated 00-index.md to reflect T35 completion (35/39 tasks, Phase 7 at 3/4).",
+      "description": "Document Ansible playbooks, configuration files (conf/), scripts, and the production deployment process.",
+      "source_paths": [
+        "MishiPay/automation/prod-deployment/",
+        "MishiPay/automation/ms.promo/",
+        "MishiPay/automation/ms.loyalty/",
+        "MishiPay/automation/ms.tax/",
+        "MishiPay/automation/datadog/",
+        "MishiPay/automation/postgres_init/",
+        "MishiPay/conf/",
+        "MishiPay/scripts/"
+      ],
+      "docs_to_update": [
+        "docs/platform/infrastructure.md"
+      ],
+      "acceptance_criteria": [
+        "Ansible playbooks documented",
+        "Production deployment steps documented",
+        "Configuration management documented",
+        "Database initialization documented",
+        "Monitoring configuration documented",
+        "Utility scripts documented"
+      ]
+    },
+    {
+      "id": "T36",
+      "title": "Infrastructure — Kafka Consumers & Microservices",
+      "phase": "Phase 7: Infrastructure & DevOps",
+      "status": "completed",
+      "completed_notes": "Expanded docs/03-infrastructure.md with comprehensive Kafka and microservices documentation: Kafka topics table (8 topics with direction, consumers, producers), consumer→handler dispatch diagram (5 handlers with business logic), producer adapter table (6 adapters), message format specification, credential configuration (2 credential sets), error handling/retry table, full microservices architecture section (7 services: ms-promo, ms-loyalty, ms-tax gRPC, ms_tax HTTP, pay+pay-gateway, voucher, inventory) with database init scripts, ports, frameworks, connection config, gRPC protobuf definition (4 RPCs, 12 message types), tax_level schema, service initialization flow, in-process microservices_client reference. Created docs/cross-cutting/data-flow.md: 5 communication protocols, full Kafka topology diagram, 6 end-to-end flow diagrams (item scan/basket, payment/post-payment, refund, fiscalisation two-hop async, external payments analytics, tax evaluation with dual service), synchronous inter-service communication map (9 routes), asynchronous event map (8 events), background task queue (Dramatiq/RabbitMQ), data storage distribution table (12 storage systems). Added 12 notable patterns (including mutable default timestamp bug, missing loyalty automation directory, duplicated gRPC stubs). Added 11 new open questions to questions.md and 6 to data-flow.md. Updated 00-index.md: Phase 7 complete (4/4), data-flow.md status updated.",
+      "description": "Document Kafka consumer services, microservices architecture (ms-promo, ms-loyalty, ms-tax), event-driven patterns, and inter-service communication.",
+      "source_paths": [
+        "MishiPay/automation/ms.promo/",
+        "MishiPay/automation/ms.loyalty/",
+        "MishiPay/automation/ms.tax/",
+        "MishiPay/mainServer/pubsub/",
+        "MishiPay/mainServer/microservices_client/",
+        "MishiPay/mainServer/protos/"
+      ],
+      "docs_to_update": [
+        "docs/03-infrastructure.md",
+        "docs/cross-cutting/data-flow.md"
+      ],
+      "acceptance_criteria": [
+        "Kafka consumer services documented",
+        "Event topics and message formats documented",
+        "Microservice communication patterns documented",
+        "gRPC service definitions documented",
+        "Event-driven architecture explained"
+      ]
+    },
+    {
+      "id": "T37",
+      "title": "Cross-Cutting — Data Flow Documentation",
+      "phase": "Phase 8: Finalization",
+      "status": "completed",
+      "completed_notes": "Expanded data-flow.md from 6 flows to 16 comprehensive end-to-end flows. Added: (1) Complete order lifecycle (5 phases: basket building, order creation, payment, completion, post-payment), (2) Detailed payment processing (MS Pay modern path, legacy PSP path, bypass/saved-card/terminal/preauth-capture special flows, status transitions), (3) Detailed promotion evaluation (monolith→ms-promo→8 family types→basket update with audit logs), (4) Detailed refund flow (dashboard→PSP→Kafka→fulfilment+receipt+RFID), (5) Receipt generation flow (strategy pattern, hierarchical config), (6) Settlement & reconciliation (2-stage pipeline, 3 collection paths, aggregation), (7) Payment alert flow (auto-remediation), (8) Inventory & item scan flow (3 import paths, 2 lookup paths, barcode normalization), (9) Customer lifecycle (auth, profile, loyalty), (10) Click & Collect flow, (11) Offline sync flow, (12) RFID tracking flow (7 vendors, gate security), (13) Subscription flow, (14-16) Fiscalisation, tax, analytics. Added cross-flow data dependency matrix and expanded dependencies section.",
+      "description": "Read all existing documentation and create a comprehensive data flow document showing how data moves through the system: user actions → API → processing → storage → events → consumers.",
+      "source_paths": [
+        "docs/"
+      ],
+      "docs_to_update": [
+        "docs/cross-cutting/data-flow.md"
+      ],
+      "acceptance_criteria": [
+        "End-to-end order flow documented",
+        "Payment processing flow documented",
+        "Promotion evaluation flow documented",
+        "Event/messaging flows documented",
+        "Data flow diagrams (text-based) included"
+      ]
+    },
+    {
+      "id": "T38",
+      "title": "Cross-Cutting — Unified API Reference",
+      "phase": "Phase 8: Finalization",
+      "status": "completed",
+      "completed_notes": "Created docs/cross-cutting/api-reference.md consolidating ~390 API endpoints from both repos into 25 domain groups. Includes auth legend, security notes for unauthenticated endpoints, endpoint count summary, and cross-references to all module docs. Updated 00-index.md.",
+      "description": "Consolidate all API endpoints from both repos into a single reference document. Read all existing docs to gather endpoint information.",
+      "source_paths": [
+        "docs/"
+      ],
+      "docs_to_update": [
+        "docs/cross-cutting/api-reference.md"
+      ],
+      "acceptance_criteria": [
+        "All API endpoints from both repos listed",
+        "Endpoints organized by domain/module",
+        "HTTP methods, paths, and brief descriptions included",
+        "Authentication requirements noted",
+        "Cross-references to detailed documentation included"
+      ]
+    },
+    {
+      "id": "T39",
+      "title": "Finalization — Index, Glossary & Review",
+      "phase": "Phase 8: Finalization",
+      "status": "completed",
+      "completed_notes": "Created comprehensive glossary (70+ terms across 4 categories: business/domain, architecture/technical, retailer-specific, acronyms). Updated master index to final state (all 39/39 tasks complete). Verified all 117 cross-references (0 broken). Added documentation completeness assessment with coverage analysis, statistics, and known gaps.",
+      "description": "Final pass: update the master index (00-index.md), create a glossary of MishiPay-specific terms, verify all cross-references, and add any missing connections between documents.",
+      "source_paths": [
+        "docs/"
+      ],
+      "docs_to_update": [
+        "docs/00-index.md",
+        "docs/cross-cutting/glossary.md"
+      ],
+      "acceptance_criteria": [
+        "Master index updated with all documentation files",
+        "Glossary of MishiPay-specific terms created",
+        "All cross-references verified",
+        "Any gaps or inconsistencies flagged",
+        "Documentation completeness assessment provided"
+      ]
+    }
+  ]
+}
