@@ -10,6 +10,8 @@ The module has two distinct responsibilities:
 1. **API Proxy** — 7 REST endpoints that forward requests to the Inventory Service and apply post-processing (sorting, category ordering)
 2. **Batch Import Pipeline** — 35+ management commands that parse retailer-specific inventory files (CSV, TSV, WooCommerce API) and upsert items into the monolith database
 
+The batch import pipeline relies on the [`inventory-common` shared library](./inventory-common.md) (`python-inventory-common`), which provides the `InventoryV1Client` HTTP client, a pandas-based ETL framework, and 44+ retailer-specific import scripts.
+
 ## Key Concepts
 
 | Term | Definition |

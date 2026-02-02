@@ -12,9 +12,9 @@ The system serves **100+ retailer integrations** across multiple countries, from
 
 ---
 
-## The Two Repositories
+## The Three Repositories
 
-The entire backend is split across two codebases:
+The backend is split across three codebases:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -24,19 +24,21 @@ The entire backend is split across two codebases:
 │  Items · Orders · Payments · Customers · Analytics      │
 │  Dashboard · Inventory · Emails · Coupons · Loyalty     │
 │  100+ retailer integrations · Kafka pub/sub             │
-└──────────────────────┬──────────────────────────────────┘
-                       │ HTTP REST
-                       ▼
-┌─────────────────────────────────────────────────────────┐
-│         Promotions Microservice (Django 4.2)            │
-│         ~106 Python files, 1 Django app                 │
-│                                                         │
-│  8 promotion families · Best-discount algorithm         │
-│  Basket evaluation · Promotion CRUD                     │
-└─────────────────────────────────────────────────────────┘
+└──────────┬──────────────────────┬───────────────────────┘
+           │ HTTP REST            │ imports as library
+           ▼                      ▼
+┌──────────────────────┐  ┌──────────────────────────────┐
+│ Promotions Service   │  │ Inventory Common Library      │
+│ (Django 4.2)         │  │ (python-inventory-common)     │
+│ ~106 Python files    │  │ ~321 Python files, ~47K lines │
+│                      │  │                                │
+│ 8 promo families     │  │ HTTP client for Inventory Svc  │
+│ Best-discount algo   │  │ Pandas ETL framework           │
+│ Basket evaluation    │  │ 44+ retailer import scripts    │
+└──────────────────────┘  └──────────────────────────────┘
 ```
 
-The **monolith** does almost everything. The **promotions service** is the one piece that was extracted into its own microservice because the discount evaluation logic is computationally complex (graph-based clustering to find optimal promotion combinations) and benefits from independent scaling.
+The **monolith** does almost everything. The **promotions service** was extracted because discount evaluation is computationally complex (graph-based clustering) and benefits from independent scaling. The **inventory common library** is a shared Python package providing the HTTP client and 44+ retailer-specific import scripts that feed product data from POS/ERP/e-commerce systems into MishiPay's Inventory Service.
 
 ---
 
@@ -247,3 +249,4 @@ Start here, then drill into what you need:
 5. **Unfamiliar term** → [Glossary](./cross-cutting/glossary.md) (70+ terms)
 6. **Promotions engine deep-dive** → Start at [Promotions Overview](./promotions-service/overview.md)
 7. **Retailer integration pattern** → [Retailer Modules](./platform/retailer-modules.md)
+8. **Inventory import pipeline** → [Inventory Common Library](./platform/inventory-common.md) (44+ retailer ETL scripts)
