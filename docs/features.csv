@@ -1,0 +1,137 @@
+Feature,Description
+Scan-and-go checkout,Customers scan product barcodes with their phone and pay in-app
+Barcode scanning,"Standard barcodes, GS1 databars, EAN/UPC, Reduce to Clear (Avery Dennison markdown barcodes)"
+Shopping basket,"Per-customer, per-store cart with expiry, quantity limits, and real-time price updates"
+Wishlist,"Save-for-later items, transferable to basket"
+Product search & browsing,Category-based navigation with hierarchical categories (up to 3 levels)
+Product variants,"Colour/size, colour-hex/size, and addon-based variant themes"
+Stock level checking,Real-time stock availability per store
+Item images,Product image serving with Cloudinary CDN integration
+Age-restricted items,Manual verification workflow requiring staff approval for alcohol/tobacco
+Max basket quantity limits,Per-item purchase quantity restrictions
+Geofencing,Location-based access control ensuring customers are physically near the store
+8 promotion family types,"Easy, Easy Plus, Combo, Line Special, Basket Threshold, Basket Threshold with Discounted Target, Meal Deal, Receipt"
+Best-discount algorithm,Graph-based clustering to find the optimal combination of promotions for a basket
+Layered promotion evaluation,"Promotions applied in priority layers (e.g., loyalty before general)"
+Per-product and per-basket evaluation,Promotions can trigger on individual items or basket totals
+Percentage and fixed-amount discounts,Both discount types supported across all families
+Coupon validation & redemption,Via external MS Loyalty Service
+Voucher discounts,Voucher code entry and validation
+Student discounts,Retailer-configurable student discount programs
+Staff/on-the-fly discounts,Dynamic discounts created at checkout time
+Referral campaigns,Share-a-code referral programs with rewards for both referrer and referee
+Italian government lottery codes,Lotteria degli Scontrini integration
+Donation programs,Charitable donation add-ons at checkout
+Promotion data import,"Automated ingestion from retailer CSV, ASC, and XML-RPC files"
+Simple promotions,"Lightweight discount types (simple discount, meal deal, X for Y) for specific retailers"
+35+ payment gateways via MS Pay,"Adyen, Stripe, Braintree, PayPal, and many more"
+22 legacy direct PSP integrations,Older direct integrations still active for some retailers
+3D Secure authentication,Card verification with redirect/OTP flows
+Preauthorization and capture,"Two-step payment flow (authorize first, capture on completion)"
+Apple Pay,Mobile wallet payments
+Google Pay,Mobile wallet payments
+Saved cards,Tokenized card storage for repeat purchases
+Partial payments,Split payment across multiple methods
+Bypass payment,Zero-amount orders (100% discounted items skip payment)
+Payment session management,Transient payment attempts with lifecycle tracking
+Payout scheduling,Automated fund transfers from MishiPay to retailer bank accounts
+Payment webhooks,Async payment status updates from PSPs
+XPay/NFC payments,Contactless payment support (Saturn Smart Pay)
+Sequential order numbering,Per-store o_id with database-level locking
+POS log transaction IDs,Sequential IDs for retailer ERP/POS integration
+Order completion pipeline,Multi-step: VAT calculation → poslog assignment → fulfilment → receipt → coupon redemption → notifications
+30+ retailer-specific fulfilment implementations,Each retailer has custom post-payment processing
+Click & Collect,"Online order with in-store pickup, own status lifecycle (created → accepted → ready_to_collect → collected)"
+Order status tracking,Full lifecycle from created through payment to completed/refunded
+Refund processing,Partial and full refunds with dashboard-initiated workflows
+RFID tag deactivation,7 vendor protocols for disabling security tags after purchase
+Offline transaction sync,Stores with unreliable connectivity can sync orders later
+VAT/tax calculation,Via ms-tax microservice (gRPC and HTTP)
+Duty-free quota tracking,Purchase limits for airport retail (DDF)
+SOAP-based fulfilment,"Order dispatch to legacy retail systems (Saturn, LS Retail)"
+Saved card orders,Repeat purchase flow using tokenized cards
+Email receipts,Transactional emails with localized templates (14 languages)
+POS printer receipts,Epson-format receipts for kiosk/counter printers
+25 retailer-specific receipt strategies,Custom receipt formatting per retailer
+8 receipt types,"Order, Refund, Gift, STEB, Payment Failed, Counter, Payment, Campaign"
+Hierarchical receipt configuration,Store+region specificity with fallback chain
+Thank-you emails,Post-purchase emails in 9 languages
+Firebase push notifications,Real-time notifications to customer devices
+MQTT notifications,Real-time RFID tag status to store devices
+Payment alert emails,Configurable threshold-based payment alerts
+Settlement reconciliation reports,Payment gateway vs internal data comparison emails
+Keycloak JWT authentication,Primary auth for mobile/web apps via Kong gateway
+Guest checkout,Anonymous shopping sessions using MishiPay ID (device identifier)
+Django Token authentication,Legacy/internal auth
+15+ retailer loyalty integrations,"Picwic, Eroski, Azpiral/Spar/Londis, Desigual, Virgin, Carters, TalonOne, Flying Tiger, Seventh Heaven/Reelo, MMI, Event Network, and more"
+Loyalty card scanning,Link customers to retailer loyalty programmes
+Decathlon SSO,"Full OAuth2 integration with Red Discount loyalty tiers (Bronze 5%, Silver 5%, Gold 7%, Platinum 10%)"
+Customer addresses,"Billing and delivery address management (V1 legacy + V2 with Apple Pay/GPay source tracking)"
+Privacy policy consent,Versioned opt-in/opt-out per customer + store type
+Marketing consent,"GDPR-compliant consent tracking with versioning, IP hashing, regional defaults"
+Customer feedback & ratings,Post-purchase product and experience ratings
+Boarding pass scanning,Airport retail customer identification (DDF)
+Retailer-specific customer profiles,"Per-retailer data: loyalty cards, tax IDs, nationality, user groups"
+Transaction tokens,Short-lived (10-minute) UUID tokens for securing sensitive operations
+Coffee subscription,Recurring Stripe payment granting daily free items at participating stores
+Daily usage limits,Per-item quantity enforcement per subscription
+Subscription lifecycle,Trial → Active → Cancelled → Expired states
+Stripe billing portal,Self-service subscription management
+Stripe webhook processing,Automated subscription state transitions
+Product catalog service,Canonical catalog in Node.js/MongoDB Inventory Service
+44+ retailer import integrations,"LS Retail (SOAP), Shopify, Odoo, Dynamics 365, WooCommerce, and 40+ more"
+Delta and full imports,Incremental updates or complete catalog replacement
+Chunked bulk uploads,Large catalogs imported in 50K-row batches
+Category hierarchies,Up to 3 levels of nested product categories
+Addon groups,"Configurable item add-ons (food customization, accessories)"
+Reduce to Clear barcodes,Avery Dennison markdown barcode parsing with Luhn checksum
+Legacy monolith inventory,PostgreSQL-based ItemInventory for retailers not yet migrated
+Barcode checksum validation,UPC-A and EAN check digit calculation
+Web-based staff portal,"Order management, refund processing, inventory operations"
+Dashboard user management,"Bulk user creation, token-based invitations, role-based permissions"
+Store-level access control,Staff permissions scoped to specific stores
+Order lookup & management,"Search, view, and manage orders"
+Dashboard refund processing,Initiate partial/full refunds with reason tracking
+Manual item verification,Staff-initiated bag checks and item counts
+Settlement reconciliation,Financial reports comparing gateway vs internal data
+LLM-powered chat,AI assistant for dashboard queries
+Cashier kiosk shift management,Android POS device shift tracking
+Cash-in-drawer tracking,"Start/end amounts, denomination breakup validation"
+Bank drop recording,Cash removed from till during shifts
+Shift summary reports,Daily per-device per-staff activity summaries
+PIN/password recovery,Staff credential recovery flows
+Event-sourced analytics,Subject-Verb-Object model capturing every user action
+18 analytics models,"Product, order, payment, login, signup, feedback, refund, app open events"
+V1 + V2 dashboard APIs,Raw event queries and pre-aggregated daily summaries
+Aggregated analytics,Pre-computed daily per-store/platform summaries for performance
+Mixpanel integration,15 event types pushed to Mixpanel
+Legacy analytics,"AppEvents, SalesSummary, Notifications models"
+Order Excel reports,Scheduled daily reports for Saturn and Decathlon
+Rating analytics,Product and experience rating aggregation
+100+ store type implementations,Each retailer gets custom behaviour via StoreType dispatch
+Agent pattern,"Retailer-specific item lookup, sold-status tracking, inventory management"
+Per-retailer configuration,49+ retailer configuration directories with payment product and email settings
+RetailerSystemConfiguration,V1 (dict-based) and V2 (model-based) config wrappers
+RFID/SecureItem tracking,Anti-theft tag management via Redis and MQTT
+Pfand (bottle deposit),German deposit handling for Saturn Smart Pay
+STEB receipts,Saudi Tax and Excise Board duty-free bag tracking (DDF)
+DDF price activation,RPM price file ingestion and staff-mediated price updates
+Italy fiscalisation (Venistar/Retail Pro),Polling-based fiscalisation for Lotteria degli Scontrini and itemised tax reporting
+Greece fiscalisation (AADE myDATA),Callback-based fiscalisation for obtaining tax mark IDs from the Greek tax authority
+Per-store-type/region fiscalisation permissions,Fiscalisation enabled per retailer and region
+Fiscal alert emails,Notifications on fiscalisation failures
+Azure VMSS deployment,Monolith on Virtual Machine Scale Sets with HAProxy zero-downtime deploys
+Kubernetes deployment,Promotions service via Helm charts
+Ansible configuration management,Molecule-tested playbooks for server provisioning
+Kafka event streaming,"6 topics, 3 consumer daemons via Confluent Cloud"
+Dramatiq background jobs,"RabbitMQ-backed async task processing (refunds, HTTP calls, POS logs)"
+Datadog + Sentry monitoring,"APM, error tracking, real-time log output"
+Kong API Gateway,"JWT validation, request routing, header injection"
+Nginx + Gunicorn,Web server configuration
+35+ production cron jobs,"Scheduled tasks for reports, cleanup, sync"
+Easy store creation,"Self-service store provisioning with template cloning, CSV bulk upload, Bitly campaign URL generation"
+Admin actions framework,Django admin-based operational tooling with audit logging
+Shopping list,Customer shopping lists with dual v1/v2 architecture and collaborative list sharing
+Django-cron scheduled jobs,Daily order reports and analytics emails
+gRPC tax service,"Tax evaluation, tax table management, tax-inclusive/exclusive pricing"
+Pub/sub messaging,6 Kafka producer adapters for business events
