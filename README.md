@@ -8,7 +8,7 @@
 
 MishiPay is a **scan-and-go retail technology platform**. Customers walk into a store, scan items with their phone (or at a kiosk), pay in-app, and leave — no traditional checkout required. The platform handles everything behind the scenes: product lookup, promotions, payments, receipts, loyalty, analytics, and retailer-specific compliance.
 
-The system serves **100+ retailer integrations** across multiple countries, from Decathlon and Dubai Duty Free to Saturn and Flying Tiger.
+The system serves **100+ retailer integrations** across multiple countries, from Dubai Duty Free to Flying Tiger.
 
 ---
 
